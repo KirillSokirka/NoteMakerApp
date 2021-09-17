@@ -1,0 +1,85 @@
+﻿@using NoteApp.Models
+@model IEnumerable<Note>
+@{
+    ViewData["Title"] = "Home Page";
+}
+<div id="modDialog" class="modal fade">
+    <div id="dialogContent" class="modal-dialog"></div>
+</div>
+
+<h1>Still in process</h1>
+
+@if (Model.Any())
+{
+    <table class="table table-hover table-borderless">
+        <thead class="table-primary">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Title)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Category)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Description)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Created)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.MentionedDate)
+                </th>               
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="overflow-auto">
+                        @Html.DisplayFor(ModelItem => item.Title)
+                    </td>
+                    <td class="overflow-auto">
+                        @Html.DisplayFor(ModelItem => item.Category)
+                    </td>
+                    <td class="overflow-auto">
+                        @Html.DisplayFor(ModelItem => item.Description)
+                    </td>
+                    <td class="overflow-auto">
+                        @Html.DisplayFor(ModelItem => item.Created)
+                    </td>
+                    <td class="overflow-auto">
+                        @Html.DisplayFor(ModelItem => item.MentionedDate)
+                    </td>
+                    <td>
+                        <div class="d-grid gap-2 d-md-block">
+                        <a class="btn btn-outline-secondary btn-sm compItem" asp-action="Edit" asp-route-id="@item.NoteId">Edit</a>
+                        <a class="btn btn-outline-secondary btn-sm compItem" asp-action="Delete" asp-route-id="@item.NoteId">Delete</a> 
+                        <a class="btn btn-outline-secondary btn-sm compItem " asp-action="Archive" asp-route-id="@item.NoteId">Archive</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<a class="btn btn-primary compItem" asp-action="Create" role="button">Create New</a>
+
+@section scripts
+{
+<script type="text/javascript">
+
+    $(function () {
+        $.ajaxSetup({ cache: false });
+       $(".compItem").click(function (e) {
+
+            e.preventDefault();
+            $.get(this.href, function (data) {
+                $('#dialogContent').html(data);
+                $('#modDialog').modal('show');
+            });
+        });
+    })
+</script>
+}
+

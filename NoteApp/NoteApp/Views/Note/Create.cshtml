@@ -1,0 +1,35 @@
+﻿@model NoteApp.Models.Note
+@{
+    ViewData["Title"] = "Create";
+}
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Note Creation</h5>
+        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <form asp-action="Create">
+        <div class="modal-body">
+            <div class="mb-3">
+                <label asp-for="Title" class="control-label">Title</label>
+                <input type="text" asp-for="Title" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label asp-for="Category" class="control-label">Category</label>
+                <select asp-for="Category" class="form-select">
+                    <option selected>Default category</option>
+                    <option value="Idea">Idea</option>
+                    <option value="Task">Task</option>
+                    <option value="Wish">Wish</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Description" class="control-label">Description</label>
+                <input type="text" asp-for="Description" class="form-control" />
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary" asp-action="Create">Create note</button>
+        </div>
+    </form>
+</div>
