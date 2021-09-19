@@ -1,0 +1,39 @@
+﻿@model NoteApp.Models.Note
+@{
+    ViewData["Title"] = "Archive";
+}
+
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Note Deleting</h5>
+        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <form asp-action="Archive" asp-route-id="@Model.NoteId" method="post">
+        <div class="modal-body">
+            <div class="mb-3">
+                <label asp-for="Title" class="control-label"></label>
+                <span class="form-control">@Model.Title</span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Category" class="control-label"></label>
+                <span class="form-control">@Model.Category</span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Description" class="control-label"></label>
+                <span class="form-control">@Model.Description</span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Archived" class="control-label"></label>
+                <select asp-for="Archived" class="form-select">
+                    <option selected>Open this select menu</option>
+                    <option value="@false">UnArchive</option>
+                    <option value="@true">Archive</option>
+                </select>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Confirm archiving</button>
+        </div>
+    </form>
+</div>
