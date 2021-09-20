@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using NoteApp.Data;
 using Microsoft.EntityFrameworkCore;
 using NoteApp.Utiities;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace NoteApp.Controllers
 {
@@ -22,17 +23,34 @@ namespace NoteApp.Controllers
             dbContext = options;
         }
 
-        public async Task<IActionResult> Index(int currentPage = 1)
+        public async Task<IActionResult> Index(string category, int currentPage = 1)
         {
-            var elementPerPage = 3;
-            var totalElements = await dbContext.Notes.CountAsync();
-            var items = await dbContext.Notes.Skip((currentPage - 1) * elementPerPage).Take(elementPerPage).ToListAsync();
-            var paginationHelper = new PaginationHelper(totalElements, currentPage, elementPerPage);
+            var categories = from note in dbContext.Notes
+                             orderby note.Category
+                             select note.Category;
+
+            var notes = from note in dbContext.Notes
+                         select note;
+
+            if(!string.IsNullOrEmpty(category))
+            {
+                notes = notes.Where(note => note.Category == category);
+            }
+            
+            var elementPerPage = 5;
+            var totalElements = await notes.CountAsync();
+            var items = await notes.Skip((currentPage - 1) * elementPerPage).Take(elementPerPage).ToListAsync();
+
             var indexViewModel = new IndexViewModel()
             {
                 Notes = items,
-                PaginationHelper = paginationHelper
+                PageModel = new PageViewModel(totalElements, currentPage, elementPerPage),
+                FilterModel = new FilterViewModel()
+                {
+                    Categories = new SelectList(await categories.Distinct().ToListAsync()),                    
+                }
             };
+
             return View(indexViewModel);
         }
 
@@ -75,7 +93,7 @@ namespace NoteApp.Controllers
 
         [HttpPost]
         public async Task<IActionResult> Edit(int id, Note note)
-        {           
+        {
             if (note.NoteId is 0)
             {
                 note.NoteId = id;
@@ -130,9 +148,9 @@ namespace NoteApp.Controllers
         }
 
         [HttpPost, ActionName("Archive")]
-        public async Task<IActionResult> ConfirmArchiving(int id,[Bind("Archived")] Note noteArchived)
+        public async Task<IActionResult> ConfirmArchiving(int id, [Bind("Archived")] Note noteArchived)
         {
-            if(noteArchived is null)
+            if (noteArchived is null)
             {
                 return NotFound();
             }
@@ -141,6 +159,6 @@ namespace NoteApp.Controllers
             dbContext.Notes.Update(noteArchived);
             await dbContext.SaveChangesAsync();
             return RedirectToAction("Index");
-        }                    
+        }
     }
 }

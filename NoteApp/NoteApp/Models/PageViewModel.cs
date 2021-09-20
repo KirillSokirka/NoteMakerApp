@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 
 namespace NoteApp.Utiities
 {
-    public class PaginationHelper
+    public class PageViewModel
     {
         public int PageNumber {  get; set; }
 
         public int TotalPages { get; set; }
 
-        public PaginationHelper(int totalItems, int pageNumber, int itemPerPage)
+        public PageViewModel(int totalItems, int pageNumber, int itemPerPage)
         {
             PageNumber = pageNumber;
             TotalPages = (int)Math.Ceiling(totalItems / (double)itemPerPage);

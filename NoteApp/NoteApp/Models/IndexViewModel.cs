@@ -8,7 +8,8 @@ namespace NoteApp.Models
 {
     public class IndexViewModel
     {
-        public PaginationHelper PaginationHelper {  get; set; }
+        public PageViewModel PageModel {  get; set; }
+        public FilterViewModel FilterModel { get; set; }
         public IEnumerable<Note> Notes {  get; set; }
     }
 }
