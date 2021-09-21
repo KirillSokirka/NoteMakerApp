@@ -1,0 +1,78 @@
+﻿@model IEnumerable<Note>
+@{ 
+    ViewData["Title"] = "Archived";
+}
+
+<div id="modDialog" class="modal fade">
+    <div id="dialogContent" class="modal-dialog"></div>
+</div>
+
+ <div class="container" style="margin-top: 1%">
+        <table class="table table-hover table-borderless">
+            <thead class="table-primary">
+                <tr>
+                    <th>
+                        @Html.Label("Title")
+                    </th>
+                    <th>
+                        @Html.Label("Category")
+                    </th>
+                    <th>
+                        @Html.Label("Description")
+                    </th>
+                    <th>
+                        @Html.Label("Created date")
+                    </th>
+                    <th>
+                        @Html.Label("Mentioned date")
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="overflow-auto">
+                            @Html.DisplayFor(ModelItem => item.Title)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(ModelItem => item.Category)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(ModelItem => item.Description)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(ModelItem => item.Created)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(ModelItem => item.MentionedDate)
+                        </td>
+                        <td>
+                            <div class="d-grid gap-2 d-md-block">                               
+                                <a class="btn btn-outline-secondary btn-sm compItem" asp-action="Delete" asp-route-id="@item.NoteId">Delete</a>
+                                <a class="btn btn-outline-secondary btn-sm compItem" asp-action="Archive" asp-route-id="@item.NoteId">UnArchive</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+</div>
+
+@section scripts
+{
+<script type="text/javascript">
+
+    $(function () {
+        $.ajaxSetup({ cache: false });
+       $(".compItem").click(function (e) {
+
+            e.preventDefault();
+            $.get(this.href, function (data) {
+                $('#dialogContent').html(data);
+                $('#modDialog').modal('show');
+            });
+        });
+    })
+</script>
+}

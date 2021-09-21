@@ -27,11 +27,17 @@ namespace NoteApp.Controllers
         {
             var categories = from note in dbContext.Notes
                              orderby note.Category
+                             where !note.Category.Equals(null)
                              select note.Category;
 
             var notes = from note in dbContext.Notes
-                         select note;
+                        where note.Archived.Equals(false) 
+                        select note;
 
+            var archivedNotes = from note in dbContext.Notes
+                                where note.Archived.Equals(true)
+                                select note;
+                             
             if(!string.IsNullOrEmpty(category))
             {
                 notes = notes.Where(note => note.Category == category);
@@ -44,6 +50,7 @@ namespace NoteApp.Controllers
             var indexViewModel = new IndexViewModel()
             {
                 Notes = items,
+                ArchivedNotes = archivedNotes.Any() ? archivedNotes : null,
                 PageModel = new PageViewModel(totalElements, currentPage, elementPerPage),
                 FilterModel = new FilterViewModel()
                 {
@@ -148,17 +155,34 @@ namespace NoteApp.Controllers
         }
 
         [HttpPost, ActionName("Archive")]
-        public async Task<IActionResult> ConfirmArchiving(int id, [Bind("Archived")] Note noteArchived)
+        public async Task<IActionResult> ConfirmArchiving(int id, bool? archived)
         {
-            if (noteArchived is null)
+            if (archived is null)
             {
                 return NotFound();
             }
             var note = await dbContext.Notes.FirstOrDefaultAsync(note => note.NoteId == id);
-            note.Archived = noteArchived.Archived;
-            dbContext.Notes.Update(noteArchived);
+            note.Archived = (bool)archived;
+            dbContext.Notes.Update(note);
             await dbContext.SaveChangesAsync();
             return RedirectToAction("Index");
+        }
+
+        public IActionResult ShowArchived(string category)
+        {
+            if (category is null)
+            {
+                return RedirectToAction("Index");
+            }
+            var notes = from note in dbContext.Notes
+                        where category.Equals(note.Category) && note.Archived.Equals(true)
+                        select note;
+            
+            if (notes.Count() == 0)
+            {
+                return NotFound();
+            }
+            return View(notes);
         }
     }
 }

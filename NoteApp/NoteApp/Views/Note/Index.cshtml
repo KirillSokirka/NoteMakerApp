@@ -79,7 +79,7 @@
         @if (Model.PageModel.HasPreviousPage)
         {
             <a asp-action="Index" asp-route-currentPage="@(Model.PageModel.PageNumber-1)" class="btn btn-sm btn-outline-secondary">
-                Previuos
+                Previous
             </a>
         }
         @if (Model.PageModel.HasNextPage)
@@ -93,8 +93,26 @@
 
 <div class="container" style="margin-top: 0.5%">
     <a class="btn btn-primary compItem" asp-action="Create" role="button">Create New</a>
-
 </div>
+
+@if (Model.ArchivedNotes is not null)
+{
+    <div class="container" style="margin-top: 1%">
+        <form asp-action="ShowArchived" method="get">
+            <label class="form-label">Archived Notes</label>
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <select name="category" asp-items="@Model.FilterModel.Categories" class="form-select form-select-sm">
+                        <option selected value="null">Choose the category of archived notes</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <input type="submit" class="btn btn-sm btn-outline-secondary" value="Show" />
+                </div>
+            </div>
+        </form>
+    </div>
+}
 
 @section scripts
 {

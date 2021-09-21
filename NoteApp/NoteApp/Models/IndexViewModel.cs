@@ -11,5 +11,6 @@ namespace NoteApp.Models
         public PageViewModel PageModel {  get; set; }
         public FilterViewModel FilterModel { get; set; }
         public IEnumerable<Note> Notes {  get; set; }
+        public IEnumerable<Note> ArchivedNotes { get; set; }
     }
 }
