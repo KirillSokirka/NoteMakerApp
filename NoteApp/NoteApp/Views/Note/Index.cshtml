@@ -63,7 +63,10 @@
                             @Html.DisplayFor(ModelItem => item.Created)
                         </td>
                         <td>
-                            @Html.DisplayFor(ModelItem => item.MentionedDate)
+                            @if (!item.MentionedDate.Equals(DateTime.MinValue))
+                            {
+                                @Html.DisplayFor(ModelItem => item.MentionedDate)
+                            }
                         </td>
                         <td>
                             <div class="d-grid gap-2 d-md-block">

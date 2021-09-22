@@ -31,18 +31,18 @@ namespace NoteApp.Controllers
                              select note.Category;
 
             var notes = from note in dbContext.Notes
-                        where note.Archived.Equals(false) 
+                        where note.Archived.Equals(false)
                         select note;
 
             var archivedNotes = from note in dbContext.Notes
                                 where note.Archived.Equals(true)
                                 select note;
-                             
-            if(!string.IsNullOrEmpty(category))
+
+            if (!string.IsNullOrEmpty(category))
             {
                 notes = notes.Where(note => note.Category == category);
             }
-            
+
             var elementPerPage = 5;
             var totalElements = await notes.CountAsync();
             var items = await notes.Skip((currentPage - 1) * elementPerPage).Take(elementPerPage).ToListAsync();
@@ -54,7 +54,7 @@ namespace NoteApp.Controllers
                 PageModel = new PageViewModel(totalElements, currentPage, elementPerPage),
                 FilterModel = new FilterViewModel()
                 {
-                    Categories = new SelectList(await categories.Distinct().ToListAsync()),                    
+                    Categories = new SelectList(await categories.Distinct().ToListAsync()),
                 }
             };
 
@@ -78,6 +78,7 @@ namespace NoteApp.Controllers
             {
                 return NotFound();
             }
+            NoteUpWriter.UpWrite(note);
             await dbContext.Notes.AddAsync(note);
             await dbContext.SaveChangesAsync();
             return RedirectToAction("Index");
@@ -105,6 +106,7 @@ namespace NoteApp.Controllers
             {
                 note.NoteId = id;
             }
+            NoteUpWriter.UpWrite(note);
             dbContext.Notes.Update(note);
             await dbContext.SaveChangesAsync();
             return RedirectToAction("Index");
@@ -177,7 +179,7 @@ namespace NoteApp.Controllers
             var notes = from note in dbContext.Notes
                         where category.Equals(note.Category) && note.Archived.Equals(true)
                         select note;
-            
+
             if (notes.Count() == 0)
             {
                 return NotFound();
